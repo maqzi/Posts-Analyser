@@ -2,8 +2,38 @@
 Post analysis (and possibly prediction) for questions/answers from Stack Overflow.
 
 
+## Plan for Analysis of Posts
+
+1. Get data into a Pandas Dataframe
+
+2. Use the following to use as features
+
+- Word count
+- Readability index _(find the specifics)_
+- Contains Source Code
+- Contains Latex math
+- Sentiment Analysis (Possibly predictive, but more intended for  descriptive)
+
+3. Run a Predictive Analysis
+
+4. Also Consider Descriptive Analysis of Different Stackexchange Communities.
+
+
+### Readability Indices
+
+Flesch-Kincaid Grade
+Gunning Fog Index
+Coleman-Liau Index
+SMOG Index
+Automated Readability Index
+Flesch-Kincaid Reading Ease
+Spache Score
+New Dale-Chall Score
+
+
 ## Resources
 <!-- We can throw links to data and other things here -->
+
 
 ### Datasets
 
