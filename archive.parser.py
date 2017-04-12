@@ -37,6 +37,10 @@ for post in attribs:
 # This just a list of strings - note that this contains html formatting. It should be useful, especially for separating code out from prose.
 print(postText[13:16])
 
+# Getting list of scores
+Scores = list()
+for post in attribs:
+    Scores.append(post.get('Score'))
 
 #################################################
 # Seeing about matching with Comments and Votes #
