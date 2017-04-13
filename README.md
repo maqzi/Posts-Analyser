@@ -40,3 +40,5 @@ New Dale-Chall Score
 [Kaggle](https://www.kaggle.com/c/transfer-learning-on-stack-exchange-tags/data)
 
 [Internet Archive](https://archive.org/details/stackexchange)
+Currently testing work on AI and IOT data sets from Internet Archive. Should add more to extend analysis once we have a working model.
+
