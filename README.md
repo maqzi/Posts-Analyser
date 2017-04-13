@@ -42,3 +42,8 @@ New Dale-Chall Score
 [Internet Archive](https://archive.org/details/stackexchange)
 Currently testing work on AI and IOT data sets from Internet Archive. Should add more to extend analysis once we have a working model.
 
+<!-- Evaulation for Grade
+- type of dataset is important. better not to use kaggle
+- do more feature engineering/data munging if you're using a cleaned up data set 
+- get good results (better accuracy - it matters)
+--!>
