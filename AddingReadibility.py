@@ -1,6 +1,9 @@
 # Date: 04/21/2017
 # Updated DFarnand 4/27/2017
 from TextCleaning import TextCleaning
+import re
+import string
+from collections import Counter
 from textstat.textstat import textstat
 import pandas as pd
 def AddReadabilityMeasures(filename):
@@ -11,6 +14,7 @@ def AddReadabilityMeasures(filename):
     Code_Count=[]
     Latex_Count=[]
     Punc_Count=[]
+    Clean_Text=[]
     for text in df['Body']:
         if(isinstance(text, str)):
             cleaned = TextCleaning(text)
@@ -20,6 +24,7 @@ def AddReadabilityMeasures(filename):
             dale_chall_readability_score = textstat.dale_chall_readability_score(text)
         else: #Consider using some sort of NA value? We probably just want to remove these in the analysis anyway
             cleaned = TextCleaning('') # Hacky way have values below
+            text = ''
             flesch_reading_ease = 0
             coleman_liau_index =0
             dale_chall_readability_score =0
@@ -29,12 +34,14 @@ def AddReadabilityMeasures(filename):
         Code_Count.append(cleaned['codeLen'])
         Latex_Count.append(cleaned['latLen'])
         Punc_Count.append(cleaned['punLen'])
+        Clean_Text.append(text)
     df['Flesch_Reading_Ease_Value']=Flesch_Reading_Ease_Value
     df['Coleman_Liau_Index_Value']=Coleman_Liau_Index_Value
     df['Dale_Chall_Readability_Score']=Dale_Chall_Readability_Score
     df['Code_Count']=Code_Count
     df['Latex_Count']=Latex_Count
     df['Punc_Count']=Punc_Count
+    df['Clean_Text']=Clean_Text
     return df
 dataFrameAi = AddReadabilityMeasures('ai_posts')
 dataFrameIot=AddReadabilityMeasures('iot_posts')
