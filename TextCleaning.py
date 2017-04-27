@@ -1,6 +1,7 @@
 import re
 import string
 from collections import Counter
+from textstat.textstat import textstat
 
 def TextCleaning(text):
     """Function to clean data from Stackexchange dumps
@@ -29,6 +30,11 @@ def TextCleaning(text):
     latLen = len(' '.join(re.findall(r"\$(.*?)\$", text, re.DOTALL)))
     text = re.sub(r"(\$.*?\$)",'',text) ## Removes code
 
+    ## Calculate Readibility Scores
+    fre = textstat.flesch_reading_ease(text)
+    cl = textstat.coleman_liau_index(text)
+    dc = textstat.dale_chall_readability_score(text)
+
     ## Punctuation
     textLen = len(text) #shortcut to avoid storing two texts for the next step
     text = re.sub('[%s]' % re.escape(string.punctuation),'', text)
@@ -37,5 +43,7 @@ def TextCleaning(text):
     ## And removing any whitespace
     text = re.sub( '\s+', ' ', text).strip()
 
-    return {'text':text, 'codeLen':codeLen ,'latLen':latLen, 'punLen':punLen}
+    return {'text':text, 'codeLen':codeLen ,'latLen':latLen, 'punLen':punLen,
+            'flesch_reading_ease':fre, 'coleman_liau_index':cl,
+            'dale_chall_readability_score':dc }
 
