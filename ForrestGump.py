@@ -15,16 +15,20 @@ def preprocess(filename):
     df = pd.read_csv(filename+'.csv', sep=",")
     df.fillna(np.NaN, inplace=True)
 
+    df = AppendNaiveBayesGuess(df,filename)
+
     # removing unnecessary columns. keeping only numbers atm
     unnecessary = ['Body','ClosedDate','CommunityOwnedDate','CreationDate','Id','LastActivityDate',
               'LastEditDate','LastEditorUserId','LastEditorDisplayName','OwnerDisplayName','OwnerUserId','ParentId',
-              'Tags','Title','Clean_Text','AcceptedAnswerId']
+              'Tags','Title','Clean_Text','AcceptedAnswerId','Score']
+
     droppable = np.intersect1d(df.columns,unnecessary)
     df = df.drop(droppable, 1)
-    for i in df.drop('ScoreLabel',1).columns:
+    for i in df.drop(['ScoreLabel','nb_guess'],1).columns:
         df[i] = df[i].replace([np.NaN], df[i].mean(skipna=True, axis=0))
-        # df[i] = StandardScaler().fit_transform(df[i], df['ScoreLabel']) #Should scale? doesn't affect the result
-    df = df.apply(pd.to_numeric)
+        df[i] = StandardScaler().fit_transform(df[i], df['ScoreLabel']) #zero mean + unit variance
+    # df = df.apply(pd.to_numeric)
+    print(df.head(5))
     return df
 
 # Getting the best random forest parameters
@@ -78,17 +82,19 @@ def RunForrestRun(filename):
     Y = df['ScoreLabel']
 
     # gridSearching(RandomForestClassifier(),X,Y)
-
     ## RUN after first calculating the best parameters using the gridSearching function.
     ## PS. USE THE BEST ONES IN THE CLASSIFIER'S ARGUMENTS
     best_rfc = RandomForestClassifier(max_features='log2', n_estimators=10, criterion='gini')
     scores = cross_val_score(best_rfc, X, Y, cv=10)
     print('crossvalidated accuracy: {}'.format(scores.mean()))
-
     adaboostedRFC(best_rfc,X,Y)
+
+def AppendNaiveBayesGuess(df,filename):
+    df['nb_guess'] = pd.read_csv('nb_'+filename+'_guess.csv', header=None,index_col=0)
+    return df
 
 if __name__ == "__main__":
     iot = 'iot_posts_with_readibility_measures'
     ai = 'ai_posts_with_readibility_measures'
     RunForrestRun(iot)
-    RunForrestRun(ai)
+    # RunForrestRun(ai)
