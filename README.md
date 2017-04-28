@@ -37,6 +37,13 @@ Spache Score
 
 New Dale-Chall Score (Using)
 
+## Other Measures
+Code Count
+
+Latex Count
+
+Punctuation Count
+
 
 ## Resources
 <!-- We can throw links to data and other things here -->
