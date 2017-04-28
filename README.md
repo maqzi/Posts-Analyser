@@ -23,12 +23,12 @@ Post analysis (and possibly prediction) for questions/answers from Stack Overflo
 
 Flesch-Kincaid Grade
 Gunning Fog Index
-Coleman-Liau Index
+Coleman-Liau Index (Using)
 SMOG Index
 Automated Readability Index
-Flesch-Kincaid Reading Ease
+Flesch-Kincaid Reading Ease (Using)
 Spache Score
-New Dale-Chall Score
+New Dale-Chall Score (Using)
 
 
 ## Resources
