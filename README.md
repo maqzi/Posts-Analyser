@@ -22,13 +22,29 @@ Post analysis (and possibly prediction) for questions/answers from Stack Overflo
 ### Readability Indices
 
 Flesch-Kincaid Grade
+
 Gunning Fog Index
-Coleman-Liau Index
+
+Coleman-Liau Index (Using)
+
 SMOG Index
+
 Automated Readability Index
-Flesch-Kincaid Reading Ease
+
+Flesch-Kincaid Reading Ease (Using)
+
 Spache Score
-New Dale-Chall Score
+
+New Dale-Chall Score (Using)
+
+## Other Measures
+Code Count (whether code is present)
+
+Latex Count (whether Latex code is present)
+
+Punctuation Count (how much punctuation is present)
+
+Cleaned Text (Usable for sentiment analysis)
 
 
 ## Resources
