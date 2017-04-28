@@ -38,11 +38,13 @@ Spache Score
 New Dale-Chall Score (Using)
 
 ## Other Measures
-Code Count
+Code Count (whether code is present)
 
-Latex Count
+Latex Count (whether Latex code is present)
 
-Punctuation Count
+Punctuation Count (how much punctuation is present)
+
+Cleaned Text (Usable for sentiment analysis)
 
 
 ## Resources
