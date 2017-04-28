@@ -49,6 +49,7 @@ def AddReadabilityMeasures(filename):
     df['Latex_Count']=Latex_Count
     df['Punc_Count']=Punc_Count
     df['Clean_Text']=Clean_Text
+    df['ScoreLabel']= (df['Score']>np.median(df['Score']))*1
     return df
 dataFrameAi = AddReadabilityMeasures('ai_posts')
 dataFrameIot=AddReadabilityMeasures('iot_posts')
