@@ -13,9 +13,9 @@ from sklearn.preprocessing import StandardScaler
 # convert to numeric, drop nas and other [currently] irrelevant features
 def preprocess(filename):
     df = pd.read_csv(filename+'.csv', sep=",")
-    df.fillna(np.NaN, inplace=True)
 
     df = AppendNaiveBayesGuess(df,filename)
+    df.fillna(np.NaN, inplace=True)
 
     # removing unnecessary columns. keeping only numbers atm
     unnecessary = ['Body','ClosedDate','CommunityOwnedDate','CreationDate','Id','LastActivityDate',
@@ -28,7 +28,6 @@ def preprocess(filename):
         df[i] = df[i].replace([np.NaN], df[i].mean(skipna=True, axis=0))
         df[i] = StandardScaler().fit_transform(df[i], df['ScoreLabel']) #zero mean + unit variance
     # df = df.apply(pd.to_numeric)
-    print(df.head(5))
     return df
 
 # Getting the best random forest parameters
@@ -82,9 +81,9 @@ def RunForrestRun(filename):
     Y = df['ScoreLabel']
 
     # gridSearching(RandomForestClassifier(),X,Y)
-    ## RUN after first calculating the best parameters using the gridSearching function.
+    # RUN after first calculating the best parameters using the gridSearching function.
     ## PS. USE THE BEST ONES IN THE CLASSIFIER'S ARGUMENTS
-    best_rfc = RandomForestClassifier(max_features='log2', n_estimators=10, criterion='gini')
+    best_rfc = RandomForestClassifier(max_features='log2', n_estimators=80, criterion='gini')
     scores = cross_val_score(best_rfc, X, Y, cv=10)
     print('crossvalidated accuracy: {}'.format(scores.mean()))
     adaboostedRFC(best_rfc,X,Y)
@@ -97,4 +96,4 @@ if __name__ == "__main__":
     iot = 'iot_posts_with_readibility_measures'
     ai = 'ai_posts_with_readibility_measures'
     RunForrestRun(iot)
-    # RunForrestRun(ai)
+    RunForrestRun(ai)
