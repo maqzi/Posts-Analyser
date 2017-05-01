@@ -86,11 +86,109 @@ def RunForrestRun(filename):
     best_rfc = RandomForestClassifier(max_features='log2', n_estimators=80, criterion='gini')
     scores = cross_val_score(best_rfc, X, Y, cv=10)
     print('crossvalidated accuracy: {}'.format(scores.mean()))
-    adaboostedRFC(best_rfc,X,Y)
+    # adaboostedRFC(best_rfc,X,Y)
+    XGBoosting(X,Y,filename)
 
 def AppendNaiveBayesGuess(df,filename):
     df['nb_guess'] = pd.read_csv('nb_'+filename+'_guess.csv', header=None,index_col=0)
     return df
+
+def XGBoosting(X,y,filename):
+    import pandas as pd
+    from xgboost import XGBClassifier
+    from sklearn.model_selection import GridSearchCV
+    from sklearn.model_selection import StratifiedKFold
+    from sklearn.model_selection import cross_val_score
+    import numpy as np
+    import matplotlib
+    matplotlib.use('Agg')
+    from matplotlib import pyplot
+
+    # ROW SAMPLING
+    # grid search
+    model = XGBClassifier()
+    subsample = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 1.0]
+    param_grid = dict(subsample=subsample)
+    kfold = StratifiedKFold(n_splits=10, shuffle=True, random_state=7)
+    grid_search = GridSearchCV(model, param_grid, scoring="neg_log_loss", n_jobs=-1, cv=kfold)
+    grid_result = grid_search.fit(X, y)
+
+    bScores = cross_val_score(grid_result.best_estimator_, X, y, cv=10)
+    print("cross val accuracy for row sampling:", np.mean(bScores))
+
+    # summarize results
+    print("Best: %f using %s" % (grid_result.best_score_, grid_result.best_params_))
+    means = grid_result.cv_results_['mean_test_score']
+    stds = grid_result.cv_results_['std_test_score']
+    params = grid_result.cv_results_['params']
+    for mean, stdev, param in zip(means, stds, params):
+        print("%f (%f) with: %r" % (mean, stdev, param))
+
+    # plot
+    pyplot.figure()
+    pyplot.errorbar(subsample, means, yerr=stds)
+    pyplot.title("XGBoost subsample vs Log Loss")
+    pyplot.xlabel('subsample')
+    pyplot.ylabel('Log Loss')
+    pyplot.savefig('Figures/subsample_'+filename+'.png')
+
+    # COLUMN SAMPLING
+    # grid search
+    model = XGBClassifier()
+    colsample_bytree = [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 1.0]
+    param_grid = dict(colsample_bytree=colsample_bytree)
+    kfold = StratifiedKFold(n_splits=10, shuffle=True, random_state=7)
+    grid_search = GridSearchCV(model, param_grid, scoring="neg_log_loss", n_jobs=-1, cv=kfold)
+    grid_result = grid_search.fit(X, y)
+
+    bScores = cross_val_score(grid_result.best_estimator_, X, y, cv=10)
+    print("cross val accuracy for col sampling:", np.mean(bScores))
+
+    # summarize results
+    print("Best: %f using %s" % (grid_result.best_score_, grid_result.best_params_))
+    means = grid_result.cv_results_['mean_test_score']
+    stds = grid_result.cv_results_['std_test_score']
+    params = grid_result.cv_results_['params']
+    for mean, stdev, param in zip(means, stds, params):
+        print("%f (%f) with: %r" % (mean, stdev, param))
+
+    # plot
+    pyplot.figure()
+    pyplot.errorbar(colsample_bytree, means, yerr=stds)
+    pyplot.title("XGBoost colsample_bytree vs Log Loss")
+    pyplot.xlabel('colsample_bytree')
+    pyplot.ylabel('Log Loss')
+    pyplot.savefig('Figures/colsample_bytree_'+filename+'.png')
+
+    # SPLIT SAMPLE
+    # grid search
+    model = XGBClassifier()
+    colsample_bylevel = [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 1.0]
+    param_grid = dict(colsample_bylevel=colsample_bylevel)
+    kfold = StratifiedKFold(n_splits=10, shuffle=True, random_state=7)
+    grid_search = GridSearchCV(model, param_grid, scoring="neg_log_loss", n_jobs=-1, cv=kfold)
+    grid_result = grid_search.fit(X, y)
+
+    bScores = cross_val_score(grid_result.best_estimator_, X, y, cv=10)
+    print("cross val accuracy for split sampling:", np.mean(bScores))
+
+    # summarize results
+    print("Best: %f using %s" % (grid_result.best_score_, grid_result.best_params_))
+    means = grid_result.cv_results_['mean_test_score']
+    stds = grid_result.cv_results_['std_test_score']
+    params = grid_result.cv_results_['params']
+    for mean, stdev, param in zip(means, stds, params):
+        print("%f (%f) with: %r" % (mean, stdev, param))
+
+    # plot
+    pyplot.figure()
+    pyplot.errorbar(colsample_bylevel, means, yerr=stds)
+    pyplot.title("XGBoost colsample_bylevel vs Log Loss")
+    pyplot.xlabel('colsample_bylevel')
+    pyplot.ylabel('Log Loss')
+    pyplot.savefig('Figures/colsample_bylevel_'+filename+'.png')
+
+
 
 if __name__ == "__main__":
     iot = 'iot_posts_with_readibility_measures'
