@@ -42,15 +42,7 @@ def buildSVMModel(filename):
     clf = SVC(kernel='linear', probability=True)
     clf = clf.fit(trainDataFrame.drop('ScoreLabel', 1), trainDataFrame['ScoreLabel'])
     predict_SVM = clf.predict_proba(testDataFrame.drop('ScoreLabel', 1))
-    # import pickle
-    # f = open('svm_aman.pickle', 'wb')
-    # pickle.dump(clf, f)
-    # f.close()
-    # loaded_clf = pickle.load(open('nbcl_aman.pickle', 'rb'))
-    #false_positive_SVM, true_positive_SVM, thresholds = metrics.roc_curve(testDataFrame['ScoreLabel'], predict_SVM[:, 1])
-    #auc_SVM = metrics.auc(false_positive_SVM, true_positive_SVM)
     auc_SVM=metrics.accuracy_score(testDataFrame['ScoreLabel'], clf.predict(testDataFrame.drop('ScoreLabel',1)))
-    #from sklearn.metrics import accuracy_score
     from sklearn.model_selection import cross_val_score
     crossvalidated_scores = cross_val_score(clf, df.drop('ScoreLabel',1), df['ScoreLabel'], cv=10)
     return clf,crossvalidated_scores.mean(),auc_SVM.mean()
