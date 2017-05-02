@@ -1,5 +1,6 @@
 import re
 import string
+import numpy as np
 from collections import Counter
 from textstat.textstat import textstat
 
@@ -14,6 +15,12 @@ def TextCleaning(text):
     - Counts and removes for latex
     - returns the text and the two counts (more can be added)
     """
+
+    NullDict = {'text':np.nan, 'codeLen':np.nan ,'latLen':np.nan, 'punLen':np.nan,
+                'flesch_reading_ease':np.nan, 'coleman_liau_index':np.nan,
+                'dale_chall_readability_score':np.nan } # To return when we want all nulls
+
+    if not isinstance(text, str): return NullDict # Catches non-text
 
     ## Removes line breaks and carriage returns (latter prob unnecessary)
     text = text.replace('\n', ' ').replace('\r', '') 
@@ -31,9 +38,12 @@ def TextCleaning(text):
     text = re.sub(r"(\$.*?\$)",'',text) ## Removes code
 
     ## Calculate Readibility Scores
-    fre = textstat.flesch_reading_ease(text)
-    cl = textstat.coleman_liau_index(text)
-    dc = textstat.dale_chall_readability_score(text)
+    if len(text)-text.count(' ') > 0: # Don't want to feed just whitespace in
+        fre = textstat.flesch_reading_ease(text)
+        cl = textstat.coleman_liau_index(text)
+        dc = textstat.dale_chall_readability_score(text)
+    else:
+        return NullDict
 
     ## Punctuation
     textLen = len(text) #shortcut to avoid storing two texts for the next step
