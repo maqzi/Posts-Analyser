@@ -3,6 +3,8 @@ import string
 import numpy as np
 from collections import Counter
 from textstat.textstat import textstat
+from textblob import TextBlob
+
 
 def TextCleaning(text):
     """Function to clean data from Stackexchange dumps
@@ -18,7 +20,8 @@ def TextCleaning(text):
 
     NullDict = {'text':np.nan, 'codeLen':np.nan ,'latLen':np.nan, 'punLen':np.nan,
                 'flesch_reading_ease':np.nan, 'coleman_liau_index':np.nan,
-                'dale_chall_readability_score':np.nan } # To return when we want all nulls
+                'dale_chall_readability_score':np.nan,
+                'polarity': np.nan, 'subjectivity': np.nan} # To return when we want all nulls
 
     if not isinstance(text, str): return NullDict # Catches non-text
 
@@ -42,6 +45,7 @@ def TextCleaning(text):
         fre = textstat.flesch_reading_ease(text)
         cl = textstat.coleman_liau_index(text)
         dc = textstat.dale_chall_readability_score(text)
+        sent = TextBlob(text).sentiment
     else:
         return NullDict
 
@@ -55,5 +59,6 @@ def TextCleaning(text):
 
     return {'text':text, 'codeLen':codeLen ,'latLen':latLen, 'punLen':punLen,
             'flesch_reading_ease':fre, 'coleman_liau_index':cl,
-            'dale_chall_readability_score':dc }
+            'dale_chall_readability_score':dc,
+            'polarity': sent.polarity, 'subjectivity': sent.subjectivity}
 

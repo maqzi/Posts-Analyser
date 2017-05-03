@@ -16,6 +16,8 @@ def AddReadabilityMeasures(filename):
     Latex_Count=[]
     Punc_Count=[]
     Clean_Text=[]
+    Polar=[]
+    Subj=[]
     for text in df['Body']:
         try:
             cleaned = TextCleaning(text) # Added nan insertion into TextCleaning
@@ -29,6 +31,8 @@ def AddReadabilityMeasures(filename):
         Latex_Count.append(cleaned['latLen'])
         Punc_Count.append(cleaned['punLen'])
         Clean_Text.append(cleaned['text'])
+        Polar.append(cleaned['polarity'])
+        Subj.append(cleaned['subjectivity'])
     df['Flesch_Reading_Ease_Value']=Flesch_Reading_Ease_Value
     df['Coleman_Liau_Index_Value']=Coleman_Liau_Index_Value
     df['Dale_Chall_Readability_Score']=Dale_Chall_Readability_Score
@@ -36,13 +40,15 @@ def AddReadabilityMeasures(filename):
     df['Latex_Count']=Latex_Count
     df['Punc_Count']=Punc_Count
     df['Clean_Text']=Clean_Text
+    df['Polarity']=Polar
+    df['Subjectivity']=Subj
     df['ScoreLabel']= (np.log10(df['Score'])>np.log10(np.median(df['Score'])))*1 #Log because scores skewed
     return df
 
 ## Commented to be able to quickly run the script for others
-# dataFrameAi = AddReadabilityMeasures('ai_posts')
-# dataFrameIot=AddReadabilityMeasures('iot_posts')
-# dataFrameAi.to_csv('ai_posts_with_readibility_measures.csv', index=False)
-# dataFrameIot.to_csv('iot_posts_with_readibility_measures.csv', index=False)
+dataFrameAi = AddReadabilityMeasures('ai_posts')
+dataFrameIot=AddReadabilityMeasures('iot_posts')
+dataFrameAi.to_csv('ai_posts_with_readibility_measures.csv', index=False)
+dataFrameIot.to_csv('iot_posts_with_readibility_measures.csv', index=False)
 
 
