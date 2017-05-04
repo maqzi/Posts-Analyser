@@ -40,8 +40,10 @@ def xValLog(filename, features, k, cutoff):
 
 
 if __name__ == "__main__":
-    features = ['Flesch_Reading_Ease_Value', 'Coleman_Liau_Index_Value', 'Dale_Chall_Readability_Score',
-            'Code_Count', 'Latex_Count','Punc_Count', 'Y'] # Have to put outcome Y in based on above function
+    features = ['Flesch_Reading_Ease_Value', 'Coleman_Liau_Index_Value',
+                'Dale_Chall_Readability_Score',
+                'Polarity', 'Subjectivity',
+                'Code_Count', 'Latex_Count','Punc_Count', 'Y'] # Have to put outcome Y in based on above function
     iot = 'iot_posts_with_readibility_measures'
     ai = 'ai_posts_with_readibility_measures'
     stats = 'stats_posts_with_readibility_measures'

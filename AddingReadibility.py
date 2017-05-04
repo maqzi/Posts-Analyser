@@ -38,8 +38,9 @@ def AddReadabilityMeasures(filename):
     df['Dale_Chall_Readability_Score']=Dale_Chall_Readability_Score
     df['Code_Count']=Code_Count
     df['Latex_Count']=Latex_Count
-    df['Punc_Count']=Punc_Count
     df['Clean_Text']=Clean_Text
+    df['Text_Length']=len(Clean_Text)
+    df['Punc_Rate']=Punc_Count/len(Clean_Text)
     df['Polarity']=Polar
     df['Subjectivity']=Subj
     df['ScoreLabel']= (np.log10(df['Score'])>np.log10(np.median(df['Score'])))*1 #Log because scores skewed
