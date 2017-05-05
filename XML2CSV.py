@@ -2,7 +2,7 @@ import xml.etree.ElementTree as ET
 import pandas as pd
 
 # xml_data = 'iot.stackexchange/Posts.xml'
-xml_data = 'ai.stackexchange/Posts.xml'
+xml_data = 'stats.stackexchange.com/Posts.xml'
 
 def xml2df(xml_data):
     tree = ET.parse(xml_data)
@@ -13,4 +13,4 @@ def xml2df(xml_data):
     return pd.DataFrame(allRecords)
 
 data = xml2df(xml_data)
-data.to_csv('ai_posts.csv')
+data.to_csv('stats_posts.csv')

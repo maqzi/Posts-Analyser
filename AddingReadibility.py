@@ -53,8 +53,10 @@ def AddReadabilityMeasures(filename):
 
 ## Commented to be able to quickly run the script for others
 dataFrameAi = AddReadabilityMeasures('ai_posts')
+dataFrameStats = AddReadabilityMeasures('stats_posts')
 dataFrameIot=AddReadabilityMeasures('iot_posts')
 dataFrameAi.to_csv('ai_posts_with_readibility_measures.csv', index=False)
 dataFrameIot.to_csv('iot_posts_with_readibility_measures.csv', index=False)
+dataFrameStats.to_csv('stats_posts_with_readibility_measures.csv', index=False)
 
 
