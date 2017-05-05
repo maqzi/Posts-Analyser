@@ -18,10 +18,11 @@ def TextCleaning(text):
     - returns the text and the two counts (more can be added)
     """
 
-    NullDict = {'text':np.nan, 'codeLen':np.nan ,'latLen':np.nan, 'punLen':np.nan,
+    NullDict = {'text':np.nan, 'codeLen':np.nan ,'latLen':np.nan, 'punRate':np.nan,
                 'flesch_reading_ease':np.nan, 'coleman_liau_index':np.nan,
                 'dale_chall_readability_score':np.nan,
-                'polarity': np.nan, 'subjectivity': np.nan} # To return when we want all nulls
+                'polarity': np.nan, 'subjectivity': np.nan,
+                'textLen': np.nan} # To return when we want all nulls
 
     if not isinstance(text, str): return NullDict # Catches non-text
 
@@ -52,13 +53,14 @@ def TextCleaning(text):
     ## Punctuation
     textLen = len(text) #shortcut to avoid storing two texts for the next step
     text = re.sub('[%s]' % re.escape(string.punctuation),'', text)
-    punLen = textLen - len(text)
+    punRate = (textLen - len(text))/len(text)
 
     ## And removing any whitespace
     text = re.sub( '\s+', ' ', text).strip()
 
-    return {'text':text, 'codeLen':codeLen ,'latLen':latLen, 'punLen':punLen,
+    return {'text':text, 'codeLen':codeLen ,'latLen':latLen, 'punRate':punRate,
             'flesch_reading_ease':fre, 'coleman_liau_index':cl,
             'dale_chall_readability_score':dc,
-            'polarity': sent.polarity, 'subjectivity': sent.subjectivity}
+            'polarity': sent.polarity, 'subjectivity': sent.subjectivity,
+            'textLen': len(text)}
 

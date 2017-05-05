@@ -14,7 +14,9 @@ def AddReadabilityMeasures(filename):
     Dale_Chall_Readability_Score=[]
     Code_Count=[]
     Latex_Count=[]
-    Punc_Count=[]
+    Text_Len=[]
+    #Punc_Count=[]
+    Punc_Rate=[]
     Clean_Text=[]
     Polar=[]
     Subj=[]
@@ -29,7 +31,9 @@ def AddReadabilityMeasures(filename):
         Dale_Chall_Readability_Score.append(cleaned['dale_chall_readability_score'])
         Code_Count.append(cleaned['codeLen'])
         Latex_Count.append(cleaned['latLen'])
-        Punc_Count.append(cleaned['punLen'])
+        Text_Len.append(cleaned['textLen'])
+        #Punc_Count.append(cleaned['punLen'])
+        Punc_Rate.append(cleaned['punRate'])
         Clean_Text.append(cleaned['text'])
         Polar.append(cleaned['polarity'])
         Subj.append(cleaned['subjectivity'])
@@ -39,8 +43,9 @@ def AddReadabilityMeasures(filename):
     df['Code_Count']=Code_Count
     df['Latex_Count']=Latex_Count
     df['Clean_Text']=Clean_Text
-    df['Text_Length']=len(Clean_Text)
-    df['Punc_Rate']=Punc_Count/len(Clean_Text)
+    df['Text_Length']=Text_Len
+    #df['Punc_Rate']=(np.array(Punc_Count)/[len(x) for x in Clean_Text]).tolist()
+    df['Punc_Rate']=Punc_Rate
     df['Polarity']=Polar
     df['Subjectivity']=Subj
     df['ScoreLabel']= (np.log10(df['Score'])>np.log10(np.median(df['Score'])))*1 #Log because scores skewed
