@@ -1,9 +1,11 @@
 import pandas as pd
 import numpy as np
-import ipdb
+import pdb
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import roc_curve, auc
 from ReportCard import ReportCard, PlotReport
+from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
+
 
 
 def PrepData(filename, features, outcome):
@@ -12,6 +14,14 @@ def PrepData(filename, features, outcome):
     df = df.dropna()
     return(df)
 
+def PrepDataVect(filename, features, outcome, textName):
+    df = PrepData(filename,features+[textName],outcome)
+    vect = CountVectorizer()
+    #pdb.set_trace()
+    #df['Vect'] = vect.fit_transform(df.ix[:,textName])
+    counts = vect.fit_transform(df.ix[:,textName])
+    pd.concat([df,pd.DataFrame(counts.A, columns=vect.get_feature_names()).to_string()])
+    return(df)
 
 # def xValLog(filename, features, outcome):
 #     """Cross-Validation Function
@@ -40,11 +50,16 @@ def PrepData(filename, features, outcome):
 
 
 
-def LogMod(filename, features, outcome, cutoff):
+def LogMod(filename, features, outcome, cutoff, vect=False):
     """Selects 90% train, 10% test data and fits the logistic regression
     """
-    dataset = PrepData(filename, features,outcome)
-    feats = dataset.ix[:,features]
+    if vect:
+        dataset = PrepDataVect(filename, features,outcome,'Clean_Text')
+        feats = dataset.drop(outcome)
+    else:
+        dataset = PrepData(filename, features,outcome)
+        feats = dataset.ix[:,features]
+
     outc = dataset.ix[:,outcome]
 
     istest = np.repeat(np.repeat([False,True],[9,1]), 1+len(outc)/10)[:len(outc)]
@@ -54,17 +69,34 @@ def LogMod(filename, features, outcome, cutoff):
     logReg.fit(feats.ix[~istest,:], outc[~istest])
     pred = logReg.predict(feats.ix[istest,:])
     probPred = logReg.predict_proba(feats.ix[istest,:])
-    #ipdb.set_trace()
     return(ReportCard(outc[istest],pred,probPred))
+
+
+def LogModVec(filename, outcome, textName, count=True):
+    """Just Vectorizing, if not count, then tjdblah
+    """
+    df = pd.read_csv(filename+'.csv', sep=",")
+    df = df.ix[:,[textName]+[outcome]]
+    df = df.dropna()
+
+    outc = df.ix[:,outcome]
+
+    row = df.shape[0]
+    istest = np.repeat(np.repeat([False,True],[9,1]), 1+row/10)[:row]
+    np.random.shuffle(istest)
+    #pdb.set_trace()
+
+    if count: vect = CountVectorizer()
+    else: vect = TfidfVectorizer()
+    fitted = vect.fit_transform(df.ix[~istest,textName])
+    test = vect.transform(df.ix[istest,textName])
+
+    logReg = LogisticRegression()
+    logReg.fit(fitted, outc[~istest])
+    pred = logReg.predict(test)
+    probPred = logReg.predict_proba(test)
     
-    #fpr, tpr, thresholds = roc_curve(outc[ind==f], testLRPred)
-
-    #AUC.append(auc(fpr,tpr))
-
-    #return(sum(AUC)/len(AUC))
-
-
-
+    return(ReportCard(outc[istest],pred,probPred))
 
 if __name__ == "__main__":
     features = ['Flesch_Reading_Ease_Value', 'Coleman_Liau_Index_Value',
@@ -89,4 +121,17 @@ if __name__ == "__main__":
 
     iotRep = LogMod(iot,features,'ScoreLabel', cutoff=2)
     aiRep = LogMod(ai,features,'ScoreLabel', cutoff=2)
-    #LogMod(stats,features,'ScoreLabel', cutoff=2)
+    statsRep = LogMod(stats,features,'ScoreLabel', cutoff=2)
+
+    print(iotRep['accuracy'],aiRep['accuracy'],statsRep['accuracy'])
+    print(iotRep['auc'],aiRep['auc'],statsRep['auc'])
+
+
+    ## Vectorized
+    iotRepVec = LogModVec(iot,'ScoreLabel','Clean_Text',count=False)
+    aiRepVec = LogModVec(ai,'ScoreLabel','Clean_Text',count=False)
+    statsRepVec = LogModVec(stats,'ScoreLabel','Clean_Text',count=False)
+
+    print(iotRepVec['accuracy'],aiRepVec['accuracy'],statsRepVec['accuracy'])
+    print(iotRepVec['auc'],aiRepVec['auc'],statsRepVec['auc'])
+

@@ -48,7 +48,7 @@ def AddReadabilityMeasures(filename):
     df['Punc_Rate']=Punc_Rate
     df['Polarity']=Polar
     df['Subjectivity']=Subj
-    df['ScoreLabel']= (np.log10(df['Score'])>np.log10(np.median(df['Score'])))*1 #Log because scores skewed
+    df['ScoreLabel']= (np.log10(df['Score'])>np.log10(2))*1 #Log because scores skewed
     return df
 
 ## Commented to be able to quickly run the script for others
