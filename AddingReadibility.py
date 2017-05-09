@@ -48,15 +48,16 @@ def AddReadabilityMeasures(filename):
     df['Punc_Rate']=Punc_Rate
     df['Polarity']=Polar
     df['Subjectivity']=Subj
-    df['ScoreLabel']= (np.log10(df['Score'])>np.log10(np.median(df['Score'])))*1 #Log because scores skewed
+    # df['ScoreLabel']= (np.log10(df['Score'])>np.log10(np.median(df['Score'])))*1 #Log because scores skewed
+    df['ScoreLabel'] = (np.log10(df['Score']) > np.log10(2)) * 1  # Score = 2 , Log because scores skewed
     return df
 
 ## Commented to be able to quickly run the script for others
 dataFrameAi = AddReadabilityMeasures('ai_posts')
 dataFrameStats = AddReadabilityMeasures('stats_posts')
 dataFrameIot=AddReadabilityMeasures('iot_posts')
-dataFrameAi.to_csv('ai_posts_with_readibility_measures.csv', index=False)
-dataFrameIot.to_csv('iot_posts_with_readibility_measures.csv', index=False)
-dataFrameStats.to_csv('stats_posts_with_readibility_measures.csv', index=False)
+dataFrameAi.to_csv('s2_ai_posts_with_readibility_measures.csv', index=False)
+dataFrameIot.to_csv('s2_iot_posts_with_readibility_measures.csv', index=False)
+dataFrameStats.to_csv('s2_stats_posts_with_readibility_measures.csv', index=False)
 
 
